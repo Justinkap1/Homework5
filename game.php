@@ -3,6 +3,7 @@
     include("index.php");
 
     if (!isset($_SESSION['pastAnswers'])) {
+        $_SESSION['offset'] = 0;
         $_SESSION['pastAnswers'] = [];
     }
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guess'])) {
@@ -16,10 +17,11 @@
                 $_SESSION['curTableMap'][$index] = $_SESSION['randomizedOrder'][$index];
             }
         }
-        //print_r($_SESSION['curTableMap']);
-        $guessBool = false;
-        if (checkGuess($_SESSION['guess'], $_SESSION['triviaArray']) === true){
-            $guessBool = true;
+        //CALL TO CHECKGUESS
+        $guessCounter = checkGuess($_SESSION['guess'], $_SESSION['triviaArray']);
+        //echo $guessCounter;
+        if ($guessCounter === 1){
+            $_SESSION['offset'] += 1;
         }
     }
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trivia'])){
@@ -36,7 +38,7 @@
         header("Location: welcome.php");
         exit();
     }
-    if (count($_SESSION['randomizedOrder']) === 0 || count($_SESSION['pastAnswers']) === 6){
+    if (count($_SESSION['randomizedOrder']) === 0 || count($_SESSION['pastAnswers']) - $_SESSION['offset'] === 5){
         header("Location: gameOver.php");
         exit();
     }
@@ -55,9 +57,14 @@
         <title>Trivia Game</title>  
     </head>
     <body>
+        <section class='game-over-button'>
+            <a href="gameOver.php">
+                <button>Leave game</button>
+            </a>
+        </section>
         <header class="game-header">
             <?php
-            echo "<h1> User: " . $_SESSION["name"] . "</h1>";
+            echo "<h1> User: " . $_SESSION['name'] . "</h1>";
             echo "<h1> Email: " . $_SESSION['email'] . "</h1>";
             //print_r($_SESSION['randomizedOrder']);
             //echo "<br>";
@@ -83,37 +90,50 @@
             ?>
         </section>
         <p>Please enter the numbers for your guess below, space separated.</p>
-        <section class="past-guesses">
-        <?php
-        //$_SESSION['pastAnswers'] = array_diff($_SESSION['pastAnswers'], $_SESSION['pastAnswers']); 
-        echo "You have used " . count($_SESSION['pastAnswers']) . " guesses and have " . (6 - count($_SESSION['pastAnswers'])) . " guesses remaining";
-        echo "<br>";
-        echo "<br>";
-        echo "Last Guesses: ";
-        for ($i = 0; $i < count($_SESSION['pastAnswers']); $i++){
+        <div class="flex-container">
+            <section class="past-guesses">
+            <?php
+            echo "You have used " . (count($_SESSION['pastAnswers']) - $_SESSION['offset']) . " guesses and have " . (6 - count($_SESSION['pastAnswers']) + $_SESSION['offset']) . " guesses remaining";
             echo "<br>";
-            for ($j = 0; $j < count($_SESSION['pastAnswers'][$i]); $j++){
-                if ($j !== 3){
-                    echo $_SESSION['pastAnswers'][$i][$j] . ", ";
+            echo "<br>";
+            echo "Last Guesses: ";
+            echo "<section class='guesses-list'>";
+            for ($i = 0; $i < count($_SESSION['pastAnswers']); $i++){
+                echo "<br>";
+                for ($j = 0; $j < count($_SESSION['pastAnswers'][$i]); $j++){
+                    if ($j !== 3){
+                        echo $_SESSION['pastAnswers'][$i][$j] . ", ";
+                    }
+                    else{
+                        echo $_SESSION['pastAnswers'][$i][$j];
+                    }
                 }
-                else{
-                    echo $_SESSION['pastAnswers'][$i][$j];
+            }
+            echo "</section>";
+            ?>
+            </section>
+            <section class="result-message">
+            <?php
+            if (isset($guessCounter)){
+                if ($guessCounter === 1){
+                    echo "You got a category!";
+                }
+                else if ($guessCounter === 0){
+                    echo "Try again!";
+                }
+                else if($guessCounter === 2){
+                    echo "You were close, but missing 2 words!";
+                }
+                else if($guessCounter === 3){
+                    echo "You were close, but missing 1 word!";
+                }
+                else if($guessCounter === 4){
+                    echo "Please enter 4 unique numbers from the table.";
                 }
             }
-        }
-        //print_r($_SESSION['triviaArray']);
-        ?>
-        <p>
-        <?php
-        if (isset($guessBool))
-            if ($guessBool === true){
-                echo "You got a category!";
-            }
-            else{
-                echo "Try again!";
-            }
-        ?>
-        </p>
+            ?>
+            </section>
+            <section class='guess-section'>
             <form class="guess-form" action="/game.php" method="post">
                 <label for="guess">Your guess:</label>
                 <input type="text" name="guess">
@@ -123,11 +143,7 @@
                 <input type="hidden" value="<?php echo htmlentities(serialize($_SESSION['triviaArray'])); ?>" name="trivia" />
                 <input type="submit" value="Submit">
             </form>
-        </section>
-        <section class='game-over-button'>
-            <a href="gameOver.php">
-                <button>Leave game</button>
-            </a>
-        </section>
+            </section>
+        </div>
     </body>
 </html>

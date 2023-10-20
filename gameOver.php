@@ -9,27 +9,31 @@
         <meta name="Justin Kaplan and Mihir Sangameswar" content="Homework5">
         <link rel="stylesheet" href="styles/styles.css"> 
 
-        <title>Trivia Game</title>  
-
+        <title>Trivia Game</title> 
+    </head>
+    <body class='game-over-body'> 
         <section class="game-over">
+            <p>
             <?php
             unset($_SESSION['pastAnswers']);
             if (count($_SESSION['randomizedOrder']) === 0){
-                echo "Congratulations, you won!";
+                echo "Congratulations ". $_SESSION['name']  .", you won!";
             }
             else{
-                echo "You ran out of guesses!";
+                echo "Sorry " . $_SESSION['name'] .", You ran out of guesses!";
             }
             ?>
-            <button>
-                <a href="welcome.php">Exit</a>
-            </button>
-            <form class="play-again-form" action="/game.php" method="post">
-                <label for="play-again">Play Again</label>
-                <br>
-                <input type="hidden" value="<?php echo $_SESSION['name'] ?>" name="name" />
-                <input type="hidden" value="<?php echo $_SESSION['email'] ?>" name="email" />
-                <input type="submit" value="Play Again">
-            </form>
+            </p>
+            <span>Choose to either:</span>
+            <div class="options">
+                <form class="play-again-form" action="/game.php" method="post">
+                    <input type="hidden" value="<?php echo $_SESSION['name'] ?>" name="name" />
+                    <input type="hidden" value="<?php echo $_SESSION['email'] ?>" name="email" />
+                    <input type="submit" value="Play Again">
+                </form>
+                <a href="welcome.php">
+                    To Welcome Page
+                </a>
+            </div>
         </section>
-    </head>
+    </body>

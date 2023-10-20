@@ -33,10 +33,16 @@
     }
     
     function checkGuess($guess, $triviaArray){
+        $checkerFor2 = false;
+        $checkerFor3 = false;
         $checker = false;
         $allWords = [];
         $indices = [];
-        $numbers = explode(' ', $guess);
+        $numbers2 = explode(' ', $guess);
+        $numbers = array_unique($numbers2);
+        if (count($numbers) !== 4){
+            return 4;
+        }
         for ($j = 0; $j < count($triviaArray); $j++){
             $count = 0;
             for ($i = 0; $i < count($numbers); $i++){
@@ -71,13 +77,23 @@
                         break 2;
                     }
                 }
+                if(($i === 3) && $count === 2){
+                    $checkerFor2 = true;
+                }
+                if(($i === count($numbers) - 1) && $count === 3){
+                    $checkerFor3 = true;
+                }
             }
         }
         array_push($_SESSION['pastAnswers'], $allWords);
-        if ($checker){
-            return true;
+        if ($checker === true){
+            return 1;
         }
-        else{
-            return false;
+        if($checkerFor2 === true){
+            return 2;
         }
+        if($checkerFor3 === true){
+            return 3;
+        }
+        return 0;
     }
