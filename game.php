@@ -80,7 +80,18 @@
                 for ($j = 0; $j < 4; $j++) {
                     $index = $i * 4 + $j;
                     $_SESSION['curTableMap'][$index] = $_SESSION['randomizedOrder'][$index];
-                    echo '<td>' . $index+1 . ". " . $_SESSION['randomizedOrder'][$index] . '</td>';
+                    $size = count($_SESSION['pastAnswers']) - 1;
+                    if(isset($_SESSION['pastAnswers']) && count($_SESSION['pastAnswers']) >= 1){
+                        if (in_array($_SESSION['randomizedOrder'][$index], $_SESSION['pastAnswers'][$size])){
+                            echo "<td class='highlighted'>" . $index+1 . ". " . $_SESSION['randomizedOrder'][$index] . "</td>";
+                        }
+                        else{
+                            echo '<td>' . $index+1 . ". " . $_SESSION['randomizedOrder'][$index] . '</td>';
+                        }
+                    }
+                    else{
+                        echo '<td>' . $index+1 . ". " . $_SESSION['randomizedOrder'][$index] . '</td>';
+                    }
                 }
                 echo '</tr>';
             }
@@ -89,31 +100,9 @@
             
             ?>
         </section>
-        <p>Please enter the numbers for your guess below, space separated.</p>
-        <div class="flex-container">
-            <section class="past-guesses">
+        <section class="result-message">
             <?php
-            echo "You have used " . (count($_SESSION['pastAnswers']) - $_SESSION['offset']) . " guesses and have " . (6 - count($_SESSION['pastAnswers']) + $_SESSION['offset']) . " guesses remaining";
             echo "<br>";
-            echo "<br>";
-            echo "Last Guesses: ";
-            echo "<section class='guesses-list'>";
-            for ($i = 0; $i < count($_SESSION['pastAnswers']); $i++){
-                echo "<br>";
-                for ($j = 0; $j < count($_SESSION['pastAnswers'][$i]); $j++){
-                    if ($j !== 3){
-                        echo $_SESSION['pastAnswers'][$i][$j] . ", ";
-                    }
-                    else{
-                        echo $_SESSION['pastAnswers'][$i][$j];
-                    }
-                }
-            }
-            echo "</section>";
-            ?>
-            </section>
-            <section class="result-message">
-            <?php
             if (isset($guessCounter)){
                 if ($guessCounter === 1){
                     echo "You got a category!";
@@ -130,7 +119,34 @@
                 else if($guessCounter === 4){
                     echo "Please enter 4 unique numbers from the table.";
                 }
+                else if($guessCounter === 5){
+                    echo "Please enter valid numbers for the current table.";
+                }
             }
+            ?>
+            </section>
+        <p>Please enter the numbers for your guess below, space separated.</p>
+        <div class="flex-container">
+            <section class="past-guesses">
+            <?php
+            echo "Current Guesses: " . (count($_SESSION['pastAnswers']));
+            echo "<br>";
+            echo "Mistakes Remaining: " . 5 - count($_SESSION['pastAnswers']) + $_SESSION['offset'];
+            echo "<br>";
+            echo "Last Guesses: ";
+            echo "<section class='guesses-list'>";
+            for ($i = 0; $i < count($_SESSION['pastAnswers']); $i++){
+                echo "<br>";
+                for ($j = 0; $j < count($_SESSION['pastAnswers'][$i]); $j++){
+                    if ($j !== 3){
+                        echo $_SESSION['pastAnswers'][$i][$j] . " | ";
+                    }
+                    else{
+                        echo $_SESSION['pastAnswers'][$i][$j];
+                    }
+                }
+            }
+            echo "</section>";
             ?>
             </section>
             <section class='guess-section'>
@@ -141,7 +157,9 @@
                 <input type="hidden" value="<?php echo $_POST['name'] ?>" name="name" />
                 <input type="hidden" value="<?php echo $_POST['email'] ?>" name="email" />
                 <input type="hidden" value="<?php echo htmlentities(serialize($_SESSION['triviaArray'])); ?>" name="trivia" />
-                <input type="submit" value="Submit">
+                <div class="submit-container">
+                    <input type="submit" value="Submit">
+                </div>
             </form>
             </section>
         </div>

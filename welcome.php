@@ -22,7 +22,7 @@
                 <input type="text" name="name">
                 <br>
                 <label for="email">Email:</label>
-                <input type="text" name="email">
+                <input type="text" name="email" $pattern = '/^[a-zA-Z0-9_+.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/' title="Enter a valid email address" required>
                 <br>
                 <input type="submit" value="Play Game!">
             </form>

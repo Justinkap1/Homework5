@@ -22,9 +22,28 @@
             else{
                 echo "Sorry " . $_SESSION['name'] .", You ran out of guesses!";
             }
+            echo "<br>";
+            echo "The Categories Were: ";
+            echo "<br>";
+            for ($i = 0; $i < count($_SESSION['triviaArray']); $i++){
+                echo "<div class='answers'>";
+                echo "<h3>" . $_SESSION['triviaArray'][$i]["category"] . ": </h3>";
+                for ($j = 0; $j < count($_SESSION['triviaArray'][$i]['words']); $j++){
+                    if(in_array($_SESSION['triviaArray'][$i]['words'][$j], $_SESSION['curTableMap'])){
+                        echo "<div class='eachAnswer'>";
+                        echo $_SESSION['triviaArray'][$i]['words'][$j] . " ";
+                        echo "</div>";
+                    }
+                    else{
+                        echo "<div class='eachAnswer2'>";
+                        echo $_SESSION['triviaArray'][$i]['words'][$j] . " ";
+                        echo "</div>";
+                    }
+                }
+                echo "</div>";
+            }
             ?>
             </p>
-            <span>Choose to either:</span>
             <div class="options">
                 <form class="play-again-form" action="/game.php" method="post">
                     <input type="hidden" value="<?php echo $_SESSION['name'] ?>" name="name" />

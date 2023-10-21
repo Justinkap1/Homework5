@@ -50,6 +50,9 @@
                 if (array_key_exists($numbers[$i]-1, $_SESSION['curTableMap'])){
                     $curWord = $_SESSION['curTableMap'][$numbers[$i] - 1];
                 }
+                else{
+                    return 5;
+                }
                 if ($j === 0){
                     array_push($allWords, $curWord);
                 }

@@ -1,5 +1,5 @@
 *{
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+    font-family:'Times New Roman', Times, serif;
 }
 .body-background{
     background-color: lightgray;
@@ -35,6 +35,7 @@ input[type=submit]{
     transition: .3s;
 }
 input[type=submit]:hover{
+    cursor: pointer;
     scale: 1.1;
     background-color: black;
     color: white;
@@ -47,11 +48,18 @@ input[type=submit]:hover{
 table{
     border-collapse: collapse; width: 50%;
 }
+tr {
+    height: 50px;
+}
 tr:nth-child(even) { 
     background-color: #f2f2f2; 
 }
 td{
-    padding: 12px; border: 1px solid #ddd; text-align: center; font-size: 16px;
+    width: 25%;
+    padding: 12px; 
+    border: 1px solid #ddd; 
+    text-align: center; 
+    font-size: 16px;
 }
 .words{
     display: flex;
@@ -61,16 +69,25 @@ td{
     display: flex;
     flex-direction: row;
 }
-.past-guesses,
-.result-message,
-.guess-section {
-    flex-basis: 33.3%;
+.past-guesses {
+    flex-basis: 50%;
     text-align: center;
     box-sizing: border-box;
     padding: 10px;
 }
-.guesses-list{
+.guess-section{
+    flex-basis: 50%;
     text-align: center;
+    box-sizing: border-box;
+    padding: 10px;
+}
+.result-message{
+    font-weight: bold;
+    text-align: center;
+}
+.guesses-list{
+    text-align: left;
+    margin-left: 7.2rem;
 }
 .game-over-button{
     text-align: right;
@@ -80,13 +97,32 @@ td{
     font-size: large;
 }
 .guess-form{
-    text-align: center;
+    text-align: left;
 }
 body p{
     color: green;
     text-align: center;
 }
-
+.highlighted{
+    background-color: yellow;
+}
+.submit-container{
+    margin-top: 1rem;
+    margin-left: 7.6rem;
+}
+.submit-container input{
+    font-size: larger;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 1%;
+    transition: .3s;
+}
+.submit-container:hover input{
+    cursor: pointer;
+    scale: 1.1;
+    background-color: black;
+    color: white;
+}
 /* GAME OVER PAGE STYLING */
 .game-over{
     background-color: bisque;
@@ -133,5 +169,45 @@ body p{
 .play-again-form,
 a {
     display: inline-block;
-    margin: 10px; /* Adjust the margin as needed */
+    margin: 10px; 
 }
+.answers {
+    padding: 10px;
+    max-width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto;
+}
+
+.eachAnswer,
+.eachAnswer2 {
+    border: 1px solid black;
+    border-radius: 40%;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 16px;
+    min-width: 100px;
+}
+
+.eachAnswer {
+    background-color: #f1807e;
+    font-weight: bold;
+    padding-top: 20px;
+    color: black;
+}
+
+.eachAnswer2 {
+    background-color: lightgreen;
+    font-weight: bold;
+    padding-top: 20px;
+    color: black;
+}
+.game-over h3{
+    padding: 2px;
+    color: black;
+}
+
+
+
