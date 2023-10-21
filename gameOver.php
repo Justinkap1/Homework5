@@ -22,8 +22,7 @@
             else{
                 echo "Sorry " . $_SESSION['name'] .", You ran out of guesses!";
             }
-            echo "<br>";
-            echo "The Categories Were: ";
+            echo "<div> You used " . $_SESSION['totalGuesses']." total guesses </div>";
             echo "<br>";
             for ($i = 0; $i < count($_SESSION['triviaArray']); $i++){
                 echo "<div class='answers'>";

@@ -23,6 +23,7 @@
         if ($guessCounter === 1){
             $_SESSION['offset'] += 1;
         }
+        $_SESSION['totalGuesses'] = count($_SESSION['pastAnswers']);
     }
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trivia'])){
         $_SESSION['triviaArray'] = unserialize($_POST['trivia']);
