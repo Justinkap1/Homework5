@@ -173,38 +173,46 @@ a {
 }
 .answers {
     padding: 5px;
-    max-width: 80%;
+    max-width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    margin: auto;
+    padding-left: 5rem;
 }
 
 .eachAnswer,
 .eachAnswer2 {
     border: 1px solid black;
-    border-radius: 40%;
+    border-radius: 10%;
     margin: 0.5rem;
     padding: 0.5rem;
     text-align: center;
-    font-size: 16px;
+    font-size: 18px;
     min-width: 100px;
 }
 
 .eachAnswer {
     background-color: #f1807e;
     font-weight: bold;
-    padding-top: 20px;
+    padding-top: 15px;
     color: black;
 }
 
 .eachAnswer2 {
     background-color: lightgreen;
     font-weight: bold;
-    padding-top: 20px;
+    padding-top: 15px;
     color: black;
 }
 .game-over h3{
     padding: 2px;
     color: black;
+}
+.answers h3{
+    text-align: left;
+    padding-right: 1rem;
+    width: 250px;
+    font-size: 24px;
+    color: black;
+    text-shadow: 2px 2px 4px rgba(119, 219, 255, 0.4);
+    margin-bottom: 10px;
 }

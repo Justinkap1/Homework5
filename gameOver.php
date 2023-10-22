@@ -15,18 +15,27 @@
         <section class="game-over">
             <p>
             <?php
+            if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
+                header("Location: welcome.php");
+                exit();
+            }
             unset($_SESSION['pastAnswers']);
             if (count($_SESSION['randomizedOrder']) === 0){
                 echo "Congratulations ". $_SESSION['name']  .", you won!";
             }
             else{
-                echo "Sorry " . $_SESSION['name'] .", You ran out of guesses!";
+                echo "Sorry " . $_SESSION['name'] .", you couldn't guess them all!";
             }
-            echo "<div> You used " . $_SESSION['totalGuesses']." total guesses </div>";
+            if ($_SESSION['totalGuesses'] >= 1){
+                echo "<div> You used " . $_SESSION['totalGuesses']." total guesses </div>";
+            }
+            else{
+                echo "<div> You quit before guessing! </div>";
+            }
             echo "<br>";
             for ($i = 0; $i < count($_SESSION['triviaArray']); $i++){
                 echo "<div class='answers'>";
-                echo "<h3>" . $_SESSION['triviaArray'][$i]["category"] . ": </h3>";
+                echo "<h3>" . $_SESSION['triviaArray'][$i]["category"] . " </h3>";
                 for ($j = 0; $j < count($_SESSION['triviaArray'][$i]['words']); $j++){
                     if(in_array($_SESSION['triviaArray'][$i]['words'][$j], $_SESSION['curTableMap'])){
                         echo "<div class='eachAnswer'>";

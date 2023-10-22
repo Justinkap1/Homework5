@@ -33,6 +33,7 @@
         $_SESSION['email'] = htmlspecialchars($_POST['email']);
         $_SESSION['triviaArray'] = getTrivia();
         $_SESSION['randomizedOrder'] = displayTrivia($_SESSION['triviaArray']);
+        $_SESSION['totalGuesses'] = 0;
 
     }
     if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
