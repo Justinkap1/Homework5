@@ -50,7 +50,7 @@
         <div class="flex-container">
             <section class="past-guesses">
             <?php
-            if((count($_SESSION['pastAnswers'])) == 5) {
+            if (count($_SESSION['randomizedOrder']) === 0 || $_SESSION['totalGuesses']  - $_SESSION['offset'] === 5) {
                 header("Location: gameOver.php");
             }
             else {

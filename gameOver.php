@@ -17,13 +17,18 @@
             <p>
             <?php
             $serializedGame = $_SESSION['game_instance'];
-            $game = unserialize($serializedGame);
-            $game->gameOver()
+            if($serializedGame==NULL) {
+                header("Location: welcome.php");
+                exit();
+            }
+            else {
+                $game = unserialize($serializedGame);
+                $game->gameOver();
+            }
             ?>
             </p>
             <div class="options">
                 <form class="play-again-form" action="/game.php" method="post">
-                    <!-- <input value="<?php echo $_SESSION['name'] ?>" name="name" /> -->
                     <input type="hidden" value="<?php echo $_SESSION['name'] ?>" name="name" />
                     <input type="hidden" value="<?php echo $_SESSION['email'] ?>" name="email" />
                     <input type="submit" value="Play Again">

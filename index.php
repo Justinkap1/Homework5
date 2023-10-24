@@ -5,7 +5,7 @@
                 $_SESSION['offset'] = 0;
                 $_SESSION['pastAnswers'] = [];
             }
-            $guessCounter = 0;
+            // $guessCounter = 0;
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guess'])) {
                 // Update session only if form is submitted
                 $_SESSION['guess'] = htmlspecialchars($_POST['guess']);
@@ -36,11 +36,11 @@
                 $_SESSION['totalGuesses'] = 0;
         
             }
-            // if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
-            //     header("Location: welcome.php");
-            //     exit();
-            // }
-            if (count($_SESSION['randomizedOrder']) === 0 || count($_SESSION['pastAnswers']) - $_SESSION['offset'] === 5){
+            if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
+                header("Location: welcome.php");
+                exit();
+            }
+            if (count($_SESSION['randomizedOrder']) === 0 || $_SESSION['totalGuesses']  - $_SESSION['offset'] === 5){
                 header("Location: gameOver.php");
                 exit();
             }
@@ -175,7 +175,8 @@
 
         public function resultMessage() {
             $guessCounter = $_SESSION['guessCounter'];
-            echo $guessCounter;
+            // echo $_SESSION['totalGuesses'];
+            // echo $_SESSION['totalGuesses']  - $_SESSION['offset'];
             echo "<br>";
                 if (isset($guessCounter)){
                     if ($guessCounter === 1){
@@ -221,10 +222,10 @@
         }
 
         public function gameOver() {
-            // if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
-            //     header("Location: welcome.php");
-            //     exit();
-            // }
+            if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
+                header("Location: welcome.php");
+                exit();
+            }
             unset($_SESSION['pastAnswers']);
             if (count($_SESSION['randomizedOrder']) === 0){
                 echo "Congratulations ". $_SESSION['name']  .", you won!";
