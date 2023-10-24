@@ -2,7 +2,9 @@
     session_start();
     include("index.php");
 
+
     $game = new CategoryGameController();
+    $_SESSION['game'] = $game;
 
     $game->construct();
     $game->startGame();
