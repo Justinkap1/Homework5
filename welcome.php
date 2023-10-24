@@ -9,7 +9,7 @@
         <meta charset="UTF-8">  
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="Justin Kaplan and Mihir Sangameswar" content="Homework5">
-        <link rel="stylesheet" href="styles/styles.css"> 
+        <link rel="stylesheet" href="styles.css"> 
 
         <title>Trivia Game</title>  
     </head>

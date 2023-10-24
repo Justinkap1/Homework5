@@ -1,5 +1,6 @@
 <?php
-    session_start();   
+    session_start();
+    include("index.php");  
 ?>
 <!DOCTYPE html>
 <html>
@@ -7,7 +8,7 @@
         <meta charset="UTF-8">  
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="Justin Kaplan and Mihir Sangameswar" content="Homework5">
-        <link rel="stylesheet" href="styles/styles.css"> 
+        <link rel="stylesheet" href="styles.css"> 
 
         <title>Trivia Game</title> 
     </head>
@@ -15,46 +16,14 @@
         <section class="game-over">
             <p>
             <?php
-            $_SESSION['game']->gameOver();
-            // if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
-            //     header("Location: welcome.php");
-            //     exit();
-            // }
-            // unset($_SESSION['pastAnswers']);
-            // if (count($_SESSION['randomizedOrder']) === 0){
-            //     echo "Congratulations ". $_SESSION['name']  .", you won!";
-            // }
-            // else{
-            //     echo "Sorry " . $_SESSION['name'] .", you couldn't guess them all!";
-            // }
-            // if ($_SESSION['totalGuesses'] >= 1){
-            //     echo "<div> You used " . $_SESSION['totalGuesses']." total guesses </div>";
-            // }
-            // else{
-            //     echo "<div> You quit before guessing! </div>";
-            // }
-            // echo "<br>";
-            // for ($i = 0; $i < count($_SESSION['triviaArray']); $i++){
-            //     echo "<div class='answers'>";
-            //     echo "<h3>" . $_SESSION['triviaArray'][$i]["category"] . " </h3>";
-            //     for ($j = 0; $j < count($_SESSION['triviaArray'][$i]['words']); $j++){
-            //         if(in_array($_SESSION['triviaArray'][$i]['words'][$j], $_SESSION['curTableMap'])){
-            //             echo "<div class='eachAnswer'>";
-            //             echo $_SESSION['triviaArray'][$i]['words'][$j] . " ";
-            //             echo "</div>";
-            //         }
-            //         else{
-            //             echo "<div class='eachAnswer2'>";
-            //             echo $_SESSION['triviaArray'][$i]['words'][$j] . " ";
-            //             echo "</div>";
-            //         }
-            //     }
-            //     echo "</div>";
-            // }
+            $serializedGame = $_SESSION['game_instance'];
+            $game = unserialize($serializedGame);
+            $game->gameOver()
             ?>
             </p>
             <div class="options">
                 <form class="play-again-form" action="/game.php" method="post">
+                    <!-- <input value="<?php echo $_SESSION['name'] ?>" name="name" /> -->
                     <input type="hidden" value="<?php echo $_SESSION['name'] ?>" name="name" />
                     <input type="hidden" value="<?php echo $_SESSION['email'] ?>" name="email" />
                     <input type="submit" value="Play Again">

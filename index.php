@@ -5,6 +5,48 @@
                 $_SESSION['offset'] = 0;
                 $_SESSION['pastAnswers'] = [];
             }
+            $guessCounter = 0;
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guess'])) {
+                // Update session only if form is submitted
+                $_SESSION['guess'] = htmlspecialchars($_POST['guess']);
+                //array_push($_SESSION['pastAnswers'], $_SESSION['guess']);
+                $_SESSION['curTableMap'] = [];
+                for ($i = 0; $i < (sizeof($_SESSION['randomizedOrder'])/4); $i++) {
+                    for ($j = 0; $j < 4; $j++) {
+                        $index = $i * 4 + $j;
+                        $_SESSION['curTableMap'][$index] = $_SESSION['randomizedOrder'][$index];
+                    }
+                }
+                //CALL TO CHECKGUESS
+                $guessCounter = $this->checkGuess($_SESSION['guess'], $_SESSION['triviaArray']);
+                //echo $guessCounter;
+                if ($guessCounter === 1){
+                    $_SESSION['offset'] += 1;
+                }
+                $_SESSION['totalGuesses'] = count($_SESSION['pastAnswers']);
+            }
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trivia'])){
+                $_SESSION['triviaArray'] = unserialize($_POST['trivia']);
+            }
+            else{
+                $_SESSION['name'] = htmlspecialchars($_POST['name']);
+                $_SESSION['email'] = htmlspecialchars($_POST['email']);
+                $_SESSION['triviaArray'] = $this->getTrivia();
+                $_SESSION['randomizedOrder'] = $this->displayTrivia($_SESSION['triviaArray']);
+                $_SESSION['totalGuesses'] = 0;
+        
+            }
+            // if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
+            //     header("Location: welcome.php");
+            //     exit();
+            // }
+            if (count($_SESSION['randomizedOrder']) === 0 || count($_SESSION['pastAnswers']) - $_SESSION['offset'] === 5){
+                header("Location: gameOver.php");
+                exit();
+            }
+
+            $_SESSION['guessCounter'] = $guessCounter;
+            // $_SESSION['firstTime'] = True;
         }
 
         public function getTrivia(){
@@ -72,13 +114,13 @@
                             }
                             $_SESSION['randomizedOrder'] = array_values($_SESSION['randomizedOrder']);
                             $_SESSION['curTableMap'] = array_values($_SESSION['curTableMap']);
-                            /*
-                            echo "randomizedOrder: ";
-                            print_r($_SESSION['randomizedOrder']);
-                            echo "<br>";
-                            echo "curTableMap: ";
-                            print_r($_SESSION['curTableMap']);
-                            */
+                            
+                            // echo "randomizedOrder: ";
+                            // print_r($_SESSION['randomizedOrder']);
+                            // echo "<br>";
+                            // echo "curTableMap: ";
+                            // print_r($_SESSION['curTableMap']);
+                            
                             
                             $checker = true;
                             break 2;
@@ -105,54 +147,9 @@
             return 0;
         }
 
-        public function startGame() {
-            
-            //putting this here so we can return it always and it can be used resultMessage()
-            $guessCounter = 0;
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guess'])) {
-                // Update session only if form is submitted
-                $_SESSION['guess'] = htmlspecialchars($_POST['guess']);
-                //array_push($_SESSION['pastAnswers'], $_SESSION['guess']);
-                $_SESSION['curTableMap'] = [];
-                for ($i = 0; $i < (sizeof($_SESSION['randomizedOrder'])/4); $i++) {
-                    for ($j = 0; $j < 4; $j++) {
-                        $index = $i * 4 + $j;
-                        $_SESSION['curTableMap'][$index] = $_SESSION['randomizedOrder'][$index];
-                    }
-                }
-                //CALL TO CHECKGUESS
-                $guessCounter = $this->checkGuess($_SESSION['guess'], $_SESSION['triviaArray']);
-                //echo $guessCounter;
-                if ($guessCounter === 1){
-                    $_SESSION['offset'] += 1;
-                }
-                $_SESSION['totalGuesses'] = count($_SESSION['pastAnswers']);
-            }
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trivia'])){
-                $_SESSION['triviaArray'] = unserialize($_POST['trivia']);
-            }
-            else{
-                $_SESSION['name'] = htmlspecialchars($_POST['name']);
-                $_SESSION['email'] = htmlspecialchars($_POST['email']);
-                $_SESSION['triviaArray'] = $this->getTrivia();
-                $_SESSION['randomizedOrder'] = $this->displayTrivia($_SESSION['triviaArray']);
-                $_SESSION['totalGuesses'] = 0;
-        
-            }
-            if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
-                header("Location: welcome.php");
-                exit();
-            }
-            if (count($_SESSION['randomizedOrder']) === 0 || count($_SESSION['pastAnswers']) - $_SESSION['offset'] === 5){
-                header("Location: gameOver.php");
-                exit();
-            }
-
-            $_SESSION['guessCounter'] = $guessCounter;
-        }
-
         public function words() {
             echo '<table>';
+            // print_r($_SESSION['pastAnswers']);
             for ($i = 0; $i < (sizeof($_SESSION['randomizedOrder'])/4); $i++) {
                 echo '<tr>';
                 for ($j = 0; $j < 4; $j++) {
@@ -178,30 +175,31 @@
 
         public function resultMessage() {
             $guessCounter = $_SESSION['guessCounter'];
+            echo $guessCounter;
             echo "<br>";
-            if (isset($guessCounter)){
-                if ($guessCounter === 1){
-                    echo "You got a category!";
+                if (isset($guessCounter)){
+                    if ($guessCounter === 1){
+                        echo "You got a category!";
+                    }
+                    else if ($guessCounter === 0){
+                        echo "Try again!";
+                    }
+                    else if($guessCounter === 2){
+                        echo "You were close, but missing 2 words!";
+                    }
+                    else if($guessCounter === 3){
+                        echo "You were close, but missing 1 word!";
+                    }
+                    else if($guessCounter === 4){
+                        echo "Please enter 4 unique numbers from the table.";
+                    }
+                    else if($guessCounter === 5){
+                        echo "Please enter valid numbers for the current table.";
+                    }
                 }
-                else if ($guessCounter === 0){
-                    echo "Try again!";
-                }
-                else if($guessCounter === 2){
-                    echo "You were close, but missing 2 words!";
-                }
-                else if($guessCounter === 3){
-                    echo "You were close, but missing 1 word!";
-                }
-                else if($guessCounter === 4){
-                    echo "Please enter 4 unique numbers from the table.";
-                }
-                else if($guessCounter === 5){
-                    echo "Please enter valid numbers for the current table.";
-                }
-            }
         }
 
-        public pastGuesses() {
+        public function pastGuesses() {
             echo "Current Guesses: " . (count($_SESSION['pastAnswers']));
             echo "<br>";
             echo "Mistakes Remaining: " . 5 - count($_SESSION['pastAnswers']) + $_SESSION['offset'];
@@ -223,10 +221,10 @@
         }
 
         public function gameOver() {
-            if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
-                header("Location: welcome.php");
-                exit();
-            }
+            // if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
+            //     header("Location: welcome.php");
+            //     exit();
+            // }
             unset($_SESSION['pastAnswers']);
             if (count($_SESSION['randomizedOrder']) === 0){
                 echo "Congratulations ". $_SESSION['name']  .", you won!";
