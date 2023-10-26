@@ -3,12 +3,9 @@
     include("index.php");
 
 
-    $game = new CategoryGameController();
-    $_SESSION['game'] = $game;
-    // $serializedGame = serialize($game);
-    // $_SESSION['game_instance'] = $serializedGame;
+    // $game = new CategoryGameController();
+    // $_SESSION['game'] = $game;
 
-    // $game->startGame();
 ?>
 <!DOCTYPE html>
 <html>
@@ -77,7 +74,7 @@
     </body>
 
     <?php    
-        $serializedGame = serialize($game);
-        $_SESSION['game_instance'] = $serializedGame;
+        // $serializedGame = serialize($game);
+        // $_SESSION['game_instance'] = $serializedGame;
     ?>
 </html>

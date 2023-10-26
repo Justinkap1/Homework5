@@ -17,7 +17,7 @@
         <header class="welcome-header">
             <h1 class="welcome-h1">Welcome to the game</h1>
             <h3 class="info">Enter your information below</h3>
-            <form class="main-form" action="/game.php" method="post">
+            <form class="main-form" action="?command=game" method="post">
                 <label for="name">Name:</label>
                 <input type="text" name="name" minlength="3" required>
                 <br>
