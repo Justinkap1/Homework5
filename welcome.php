@@ -1,8 +1,3 @@
-<?php
-    session_start();
-    include("index.php");
-    session_destroy();
-?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="Justin Kaplan and Mihir Sangameswar" content="Homework5">
         <link rel="stylesheet" href="styles.css"> 
+  
 
         <title>Trivia Game</title>  
     </head>
@@ -28,4 +24,11 @@
             </form>
         </header>
     </body>
+
+    <?php
+        print_r ($_GET['command']);
+        echo "mihir";
+        // print_r($_SESSION['name']);
+        // print_r($_SESSION['email']);
+    ?>
 </html>

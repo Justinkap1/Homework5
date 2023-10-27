@@ -1,11 +1,9 @@
 
 <?php
     class CategoryGameController {
-
         private $input = [];
-        public function __construct($input) {
-
-            $this->$input = $input;
+        public function __construct() {
+            session_start();
             
             if (!isset($_SESSION['pastAnswers'])) {
                 $_SESSION['offset'] = 0;
@@ -31,23 +29,31 @@
                 }
                 $_SESSION['totalGuesses'] = count($_SESSION['pastAnswers']);
             }
+            if(isset($_POST['name'])) {
+                $_SESSION['name'] = htmlspecialchars($_POST['name']);
+                $_SESSION['email'] = htmlspecialchars($_POST['email']);
+            }
+
             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trivia'])){
                 $_SESSION['triviaArray'] = unserialize($_POST['trivia']);
             }
+            else if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['trivia'])) {
+                $_SESSION['triviaArray'] = unserialize($_POST['trivia']);
+            }
             else{
-                $_SESSION['name'] = htmlspecialchars($_POST['name']);
-                $_SESSION['email'] = htmlspecialchars($_POST['email']);
                 $_SESSION['triviaArray'] = $this->getTrivia();
                 $_SESSION['randomizedOrder'] = $this->displayTrivia($_SESSION['triviaArray']);
                 $_SESSION['totalGuesses'] = 0;
         
             }
             if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
-                header("Location: welcome.php");
+                // header("Location: hw5/welcome.php");
+                $this->welcome();
                 exit();
+                
             }
             if (count($_SESSION['randomizedOrder']) === 0 || $_SESSION['totalGuesses']  - $_SESSION['offset'] === 5){
-                header("Location: gameOver.php");
+                $this->gameOverContr();
                 exit();
             }
 
@@ -183,97 +189,63 @@
             $guessCounter = $_SESSION['guessCounter'];
             // echo $_SESSION['totalGuesses'];
             // echo $_SESSION['totalGuesses']  - $_SESSION['offset'];
-            echo "<br>";
+            $myMessage = "";
                 if (isset($guessCounter)){
                     if ($guessCounter === 1){
-                        echo "You got a category!";
+                        $myMessage =  "You got a category!";
                     }
                     else if ($guessCounter === 0){
-                        echo "Try again!";
+                        $myMessage = "Try again!";
                     }
                     else if($guessCounter === 2){
-                        echo "You were close, but missing 2 words!";
+                        $myMessage = "You were close, but missing 2 words!";
                     }
                     else if($guessCounter === 3){
-                        echo "You were close, but missing 1 word!";
+                        $myMessage = "You were close, but missing 1 word!";
                     }
                     else if($guessCounter === 4){
-                        echo "Please enter 4 unique numbers from the table.";
+                        $myMessage = "Please enter 4 unique numbers from the table.";
                     }
                     else if($guessCounter === 5){
-                        echo "Please enter valid numbers for the current table.";
+                        $myMessage = "Please enter valid numbers for the current table.";
                     }
                 }
+            $_SESSION['myMessage'] = $myMessage;
         }
 
         public function pastGuesses() {
-            echo "Current Guesses: " . (count($_SESSION['pastAnswers']));
-            echo "<br>";
-            echo "Mistakes Remaining: " . 5 - count($_SESSION['pastAnswers']) + $_SESSION['offset'];
-            echo "<br>";
-            echo "Last Guesses: ";
-            echo "<section class='guesses-list'>";
-            for ($i = 0; $i < count($_SESSION['pastAnswers']); $i++){
-                echo "<br>";
-                for ($j = 0; $j < count($_SESSION['pastAnswers'][$i]); $j++){
-                    if ($j !== 3){
-                        echo $_SESSION['pastAnswers'][$i][$j] . " | ";
-                    }
-                    else{
-                        echo $_SESSION['pastAnswers'][$i][$j];
-                    }
-                }
-            }
-            echo "</section>";
+            $_SESSION['currentGuesses'] = "Current Guesses: " . (count($_SESSION['pastAnswers']));
+            $_SESSION['mistakesRemaining'] = "Mistakes Remaining: " . 5 - count($_SESSION['pastAnswers']) + $_SESSION['offset'];
         }
 
         public function gameOver() {
-            if (($_SESSION['name'] === null || $_SESSION['name'] === "") || ($_SESSION['email'] === null || $_SESSION['email'] === "")){
-                header("Location: welcome.php");
-                exit();
-            }
+            $_SESSION['gameOverMessage'] = "NULL";
             unset($_SESSION['pastAnswers']);
             if (count($_SESSION['randomizedOrder']) === 0){
-                echo "Congratulations ". $_SESSION['name']  .", you won!";
+                $_SESSION['gameOverMessage'] =  "Congratulations ". $_SESSION['name']  .", you won!";
             }
             else{
-                echo "Sorry " . $_SESSION['name'] .", you couldn't guess them all!";
+                $_SESSION['gameOverMessage'] =  "Sorry " . $_SESSION['name'] .", you couldn't guess them all!";
             }
+            $_SESSION['myGuesses'] = "NULL";
+
             if ($_SESSION['totalGuesses'] >= 1){
-                echo "<div> You used " . $_SESSION['totalGuesses']." total guesses </div>";
+                $_SESSION['myGuesses'] = "<div> You used " . $_SESSION['totalGuesses']." total guesses </div>";
             }
             else{
-                echo "<div> You quit before guessing! </div>";
-            }
-            echo "<br>";
-            for ($i = 0; $i < count($_SESSION['triviaArray']); $i++){
-                echo "<div class='answers'>";
-                echo "<h3>" . $_SESSION['triviaArray'][$i]["category"] . " </h3>";
-                for ($j = 0; $j < count($_SESSION['triviaArray'][$i]['words']); $j++){
-                    if(in_array($_SESSION['triviaArray'][$i]['words'][$j], $_SESSION['curTableMap'])){
-                        echo "<div class='eachAnswer'>";
-                        echo $_SESSION['triviaArray'][$i]['words'][$j] . " ";
-                        echo "</div>";
-                    }
-                    else{
-                        echo "<div class='eachAnswer2'>";
-                        echo $_SESSION['triviaArray'][$i]['words'][$j] . " ";
-                        echo "</div>";
-                    }
-                }
-                echo "</div>";
+                $_SESSION['myGuesses'] =  "<div> You quit before guessing! </div>";
             }
         }
 
         public function run() {
             // Get the command
             $command = "welcome";
-            if (isset($this->input["command"]))
-                $command = $this->input["command"];
-    
+            if (isset($_GET["command"]))
+                $command = $_GET["command"];
             switch($command) {
                 case "game":
                     $this->game();
+                    break;
                 case "gameOver":
                     $this->gameOverContr();
                     break;
@@ -287,15 +259,34 @@
         }
         
         public function game() {
+            $this->pastGuesses();
+            $this->resultMessage();
+            $myMessage = $_SESSION['myMessage'];
+            $currentGuessNum =  $_SESSION['currentGuesses'];
+            $mistakesRemaining = $_SESSION['mistakesRemaining'];
             include "/opt/src/hw5/game.php";
+
         }
+        
 
         public function gameOverContr() {
+            $this->gameOver();
+            $gameOverMessage = $_SESSION['gameOverMessage'];
+            $myGuesses = $_SESSION['myGuesses'];
+            // unset($_SESSION['pastAnswers']);
             include "/opt/src/hw5/gameOver.php";
         }
 
         public function welcome() {
+            session_destroy();
+            session_start();
             include "/opt/src/hw5/welcome.php";
+        }
+
+        public function checkOver() {
+            if (count($_SESSION['randomizedOrder']) === 0 || $_SESSION['totalGuesses']  - $_SESSION['offset'] === 5) {
+                return True;
+            }
         }
     }
 

@@ -1,12 +1,3 @@
-<?php
-    session_start();
-    include("index.php");
-
-
-    // $game = new CategoryGameController();
-    // $_SESSION['game'] = $game;
-
-?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -19,9 +10,10 @@
     </head>
     <body>
         <section class='game-over-button'>
-            <a href="gameOver.php">
-                <button>Leave game</button>
-            </a>
+            <form class="play-again-form" action="?command=gameOver" method="post">
+                    <button>Leave game</button>
+                    <input type="hidden" value="<?php echo htmlentities(serialize($_SESSION['triviaArray'])); ?>" name="trivia" />
+            </form>
         </section>
         <header class="game-header">
             <?php
@@ -33,37 +25,68 @@
             //print_r($_SESSION['triviaArray']);
             ?>    
         </header>
-        <section class="words">                                                      
+        <section class="words">                                                    
             <?php
-            $game->words();
+            echo '<table>';
+            // print_r($_SESSION['pastAnswers']);
+            for ($i = 0; $i < (sizeof($_SESSION['randomizedOrder'])/4); $i++) {
+                echo '<tr>';
+                for ($j = 0; $j < 4; $j++) {
+                    $index = $i * 4 + $j;
+                    $_SESSION['curTableMap'][$index] = $_SESSION['randomizedOrder'][$index];
+                    $size = count($_SESSION['pastAnswers']) - 1;
+                    if(isset($_SESSION['pastAnswers']) && count($_SESSION['pastAnswers']) >= 1){
+                        if (in_array($_SESSION['randomizedOrder'][$index], $_SESSION['pastAnswers'][$size])){
+                            echo "<td class='highlighted'>" . $index+1 . ". " . $_SESSION['randomizedOrder'][$index] . "</td>";
+                        }
+                        else{
+                            echo '<td>' . $index+1 . ". " . $_SESSION['randomizedOrder'][$index] . '</td>';
+                        }
+                    }
+                    else{
+                        echo '<td>' . $index+1 . ". " . $_SESSION['randomizedOrder'][$index] . '</td>';
+                    }
+                }
+                echo '</tr>';
+            }
+            echo '</table>';
             ?>
         </section>
         <section class="result-message">
-            <?php
-            $game->resultMessage();
+            <?php 
+            if($myMessage != 0) {
+                echo $myMessage;
+            }
             ?>
-            </section>
+        </section>
         <p>Please enter the numbers for your guess below, space separated.</p>
         <div class="flex-container">
             <section class="past-guesses">
-            <?php
-            if (count($_SESSION['randomizedOrder']) === 0 || $_SESSION['totalGuesses']  - $_SESSION['offset'] === 5) {
-                header("Location: gameOver.php");
-            }
-            else {
-                $game->pastGuesses();
-                
-            }
-
-            ?>
+                <p> <?=$currentGuessNum?> </p>
+                <p> <?=$mistakesRemaining?> </p>
+                <?php
+                    echo "<section class='guesses-list'>";
+                            for ($i = 0; $i < count($_SESSION['pastAnswers']); $i++){
+                                echo "<br>";
+                                for ($j = 0; $j < count($_SESSION['pastAnswers'][$i]); $j++){
+                                    if ($j !== 3){
+                                        echo $_SESSION['pastAnswers'][$i][$j] . " | ";
+                                    }
+                                    else{
+                                        echo $_SESSION['pastAnswers'][$i][$j];
+                                    }
+                                }
+                            }
+                    echo "</section>";
+                ?>
             </section>
             <section class='guess-section'>
-            <form class="guess-form" action="/game.php" method="post">
+            <form class="guess-form" action="?command=game" method="post">
                 <label for="guess">Your guess:</label>
                 <input type="text" name="guess">
                 <br>
-                <input type="hidden" value="<?php echo $_POST['name'] ?>" name="name" />
-                <input type="hidden" value="<?php echo $_POST['email'] ?>" name="email" />
+                <input type="hidden" value="<?php echo $_SESSION['name'] ?>" name="name" />
+                <input type="hidden" value="<?php echo $_SESSION['email'] ?>" name="email" />
                 <input type="hidden" value="<?php echo htmlentities(serialize($_SESSION['triviaArray'])); ?>" name="trivia" />
                 <div class="submit-container">
                     <input type="submit" value="Submit">
